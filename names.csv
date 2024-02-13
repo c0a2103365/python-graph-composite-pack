@@ -1,0 +1,5 @@
+﻿service,enter shell command,generate log
+python1,docker compose exec python1 bash,2024-02-13 19:46:44.989139
+julia,docker compose exec julia bash,2024-02-13 19:46:44.989147
+rapids1,docker compose exec rapids1 bash,2024-02-13 19:46:44.989148
+yml-read1,docker compose exec yml-read1 bash,2024-02-13 19:46:44.989149

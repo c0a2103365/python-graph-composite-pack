@@ -1,0 +1,80 @@
+version: "3.9"
+
+services:
+  # Pythonコンテナ
+  python1:
+    stdin_open: true
+    tty: true
+    restart: always
+    entrypoint: >
+      jupyter-lab
+      --allow-root
+      --ip=0.0.0.0
+      --port=8888
+      --no-browser
+      --notebook-dir=/workspace
+    expose:
+      - "8888"
+    # 下記の左の番号だけを変更する
+    ports:
+      - "7432:8888"
+    volumes:
+      - ../workspace:/workspace
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities:
+                - gpu
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+
+  # juliaコンテナ
+  julia:
+    stdin_open: true
+    tty: true
+    volumes:
+      - ../workspace:/workspace
+    deploy:
+            resources:
+                reservations:
+                    devices:
+                        - driver: nvidia
+                          count: all
+                          capabilities:
+                              - gpu
+    build:
+      context: ./julia
+      dockerfile: ./Dockerfile
+
+  # rapidsコンテナ
+  rapids1:
+    stdin_open: true
+    tty: true
+    volumes:
+      - ../workspace:/workspace
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities:
+                - gpu
+    build:
+      context: ./rapids
+      dockerfile: Dockerfile
+
+  # yamlを読み取るコンテナ
+  yml-read1:
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./names.csv:/names.csv
+      - ./docker-compose.yml:/docker-compose.yml
+    build:
+      context: ./yml-read
+      dockerfile: Dockerfile
